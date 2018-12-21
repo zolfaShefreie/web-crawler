@@ -16,10 +16,12 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     node.cpp \
-    tree_node.cpp
+    tree_node.cpp \
+    downloader.cpp
 
 HEADERS  += mainwindow.h \
     node.h \
-    tree_node.h
+    tree_node.h \
+    downloader.h
 
 FORMS    += mainwindow.ui
