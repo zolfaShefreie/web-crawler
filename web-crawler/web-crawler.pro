@@ -17,11 +17,11 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     node.cpp \
     tree_node.cpp \
-    downloader.cpp
+    download_files.cpp
 
 HEADERS  += mainwindow.h \
     node.h \
     tree_node.h \
-    downloader.h
+    download_files.h
 
 FORMS    += mainwindow.ui
