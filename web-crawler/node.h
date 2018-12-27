@@ -10,6 +10,11 @@ class node
 {
 public:
     node();
+    //1::link
+    //2::img
+    //3::gif
+    //4::script
+    int which_item;
     QString url_name;
     QByteArray html;
 
