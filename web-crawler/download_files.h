@@ -5,6 +5,7 @@
 #include<QtNetwork>
 #include<regex>
 #include<QQueue>
+#include<map>
 #include<tree_node.h>
 using namespace std;
 
@@ -16,18 +17,23 @@ public:
 
     explicit download_files(QObject *parent = 0);
     QString page_address;
-    //QString url_dtr;
+    QString url_str;
     int depth;
     int firstOrNot=0;
     QByteArray downloaded_data;
-    QQueue<tree_node> queue_download;
-    QList<string> listOfLinks;
-    QList<string> listOfImg;
+    QQueue<tree_node*> queue_download;
+    map<QString,QByteArray> store_downloaded_file;
+    web_tree* tree;
+    tree_node* parent_pointer;
+    tree_node* current_data;
+//    QList<string> listOfLinks;
+//    QList<string> listOfImg;
     QNetworkAccessManager * networkManger;
     //QNetworkReply rely;
     QNetworkRequest* request;
     void start_process();
     void download_file();
+    void insert_to_tree();
     void get_links();
     void get_img();
     void get_script();

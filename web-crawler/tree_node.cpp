@@ -37,6 +37,7 @@ bool web_tree::insert(node a, node b)
     {
         tree_node* m=new tree_node(b);
         tree_node* k=search(a);
+        m->parent=k;
         k->child.push_back(m);
         cnt++;
         return true;

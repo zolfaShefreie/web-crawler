@@ -12,11 +12,13 @@ public:
     tree_node();
     tree_node(node b);
     node key;
+    tree_node* parent;
     vector<tree_node *> child;
 };
 
 class web_tree
 {
+public:
     tree_node * root;
     int cnt;
     tree_node* search(node f);
