@@ -70,11 +70,34 @@ int web_tree::size()
     return cnt;
 }
 
+bool web_tree::isEmpty()
+{
+    if(cnt==0)
+        return true;
+    else return false;
+}
+
 web_tree::web_tree(node m)
 {
     tree_node* a=new tree_node(m);
     root=a;
     cnt=1;
+}
+
+QStringList web_tree::children(node j)
+{
+    QStringList l;
+    l.clear();
+    if(search(j)!=0)
+    {
+        tree_node* k=search(j);
+        for(int i=0;i<k->child.size();i++)
+        {
+            tree_node* a=k->child[i];
+            l.push_back(a->key.url_name);
+        }
+    }
+    return l;
 }
 
 

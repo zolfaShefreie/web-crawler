@@ -3,6 +3,7 @@
 
 #include"node.h"
 #include<vector>
+#include<QStringList>
 using namespace std;
 
 
@@ -25,8 +26,9 @@ public:
     bool insert(node a,node b);
     //void tree_traversal();
     int size();
-    //bool isEmpty();
+    bool isEmpty();
     web_tree(node m);
+    QStringList children(node j);
 };
 
 #endif // TREE_NODE_H
