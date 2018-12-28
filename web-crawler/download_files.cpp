@@ -2,7 +2,9 @@
 
 download_files::download_files(QObject *parent) : QObject(parent)
 {
-
+    i=0;
+    queue_download.clear();
+    //tree.clear();
 }
 
 void download_files::start_process()
@@ -22,7 +24,9 @@ void download_files::start_process()
             this->get_script();
 
             firstOrNot=1;
-            depth--;
+            //depth--;
+            numberOfChildren.push_back(tree->root->child.size());
+            numberOfChildren.push_back(0);
         }
         else if(firstOrNot!=0 && !queue_download.empty())
         {
@@ -31,14 +35,24 @@ void download_files::start_process()
             url_str=current_data->key.url_name;
             if(store_downloaded_file.find(url_str)!=store_downloaded_file.end())
                 this->download_file();
-            //else be tree bayad ezafeh beshe
-            if(depth>0)
+            else insert_to_tree();
+            if(depth==numberOfChildren.size()-1)
             {
+
                 if(current_data->key.which_item==1)
+                {
                     this->get_links();
-                this->get_img();
-                this->get_script();
-                depth--;
+                    this->get_img();
+                    this->get_script();
+                }
+
+                numberOfChildren[i+1]+=current_data->child.size();
+                if(numberOfChildren[i]==0)
+                {
+                    i++;
+                    numberOfChildren.push_back(0);
+                }
+                else numberOfChildren[i]--;
             }
         }
         else if(firstOrNot!=0 && queue_download.empty())
@@ -65,7 +79,10 @@ void download_files::download_file()
 
 void download_files::insert_to_tree()
 {
-
+    node item_insert;
+    item_insert.url_name=url_str;
+    tree_node * item=tree->search(item_insert);
+    tree->insert(item->parent->key,item->key);
 
 }
 
@@ -118,9 +135,13 @@ void download_files::get_img()
     data->parent=this->parent_pointer;
     while(std::regex_search(html_str,match,r))
     {
+        string str1=match[1].str();
         data->key.url_name=QString::fromStdString(match[1].str());
         //img or gif
-        data->key.which_item=2;
+        regex r1(".+?\.gif");
+        if(std::regex_match(str1,r1))
+            data->key.which_item=3;
+        else data->key.which_item=2;
         //tree->insert(data->parent->key,data->key);
         queue_download.enqueue(data);
         //listOfImg.push_back(match[1].str());
@@ -149,6 +170,8 @@ void download_files::get_script()
 void download_files::finish_download_process(QNetworkReply *reply)
 {
     downloaded_data=reply->readAll();
+    if(firstOrNot==0)
+        tree->root->key.html=downloaded_data;
     store_downloaded_file.insert(std::pair<QString,QByteArray>(url_str,downloaded_data));
     current_data->key.html=downloaded_data;
     tree->insert(current_data->parent->key,current_data->key);

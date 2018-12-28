@@ -20,6 +20,8 @@ public:
     QString url_str;
     int depth;
     int firstOrNot=0;
+    int i=0;
+    vector<int> numberOfChildren;
     QByteArray downloaded_data;
     QQueue<tree_node*> queue_download;
     map<QString,QByteArray> store_downloaded_file;
