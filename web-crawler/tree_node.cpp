@@ -72,6 +72,34 @@ web_tree::web_tree(node m)
     cnt=1;
 }
 
+QStringList web_tree::children(tree_node j)
+{
+    QStringList l;
+    l.clear();
+    if(search(j)!=0)
+    {
+        tree_node* k=search(j);
+        for(int i=0;i<k->child.size();i++)
+        {
+            tree_node* a=k->child[i];
+            l.push_back(a->key.url_name);
+        }
+    }
+    return l;
+}
+
+void web_tree::clear()
+{
+    tree_node* b=root;
+    for(int i=0;i<b->child.size();i++)
+    {
+        tree_node* a=b->child[i];
+        a->parent=0;
+    }
+    delete root;
+    b=0;
+}
+
 //QStringList web_tree::children(node j)
 //{
 //    QStringList l;
@@ -116,7 +144,7 @@ bool web_tree::insert(tree_node &f)
 {
     tree_node*m=&f;
     m->parent->child.push_back(m);
-    //f.parent->child.push_back(f);
+    cnt++;
 }
 
 //bool web_tree::insert(tree_node &f)
