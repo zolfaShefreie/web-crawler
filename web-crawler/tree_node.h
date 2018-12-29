@@ -24,10 +24,11 @@ public:
     tree_node * root;
     int cnt;
     tree_node* search(tree_node & f);
-    bool insert(tree_node &f);
+    bool insert(tree_node & f);
     int size();
     bool isEmpty();
     web_tree(node m);
+    //bool insert(tree_node &f);
     //QStringList children(node j);
     //tree_node* search(node f);
     //void tree_traversal();
