@@ -140,11 +140,12 @@ tree_node *web_tree::search(tree_node &f)
     return 0;
 }
 
-bool web_tree::insert(tree_node &f)
+bool web_tree::insert(tree_node *f)
 {
-    tree_node*m=&f;
+    tree_node*m=f;
     m->parent->child.push_back(m);
     cnt++;
+    return true;
 }
 
 //bool web_tree::insert(tree_node &f)
