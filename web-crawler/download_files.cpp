@@ -167,19 +167,84 @@ void download_files::get_script()
     }
 }
 
+void download_files::save_in_a_folser(QString child, QString father, int dirOrFile)
+{
+    QString child_path=make_name_of_dirOrFile(child);
+    QString path="";
+    if(dirOrFile==0)
+    {
+        path+=father;
+        path+="/";
+        path+=child_path;
+        QDir dir(path);
+        dir.mkdir(".");
+        current_data->key.path=path;
+        path+="/";
+        path+=make_name_of_dirOrFile(current_data->parent->key.url_name);
+        path+=".txt";
+        QFile *file=new QFile(path);
+        if(file->open(QFile::Append))
+        {
+            file->write(downloaded_data);
+            file->flush();
+            file->close();
+        }
+    }
+    else if(dirOrFile==1)
+    {
+        path+=father;
+        path+="/";
+        path+=child_path;
+        path+=".txt";
+        QFile *file=new QFile(path);
+        if(file->open(QFile::Append))
+        {
+            file->write(downloaded_data);
+            file->flush();
+            file->close();
+        }
+        current_data->key.path=path;
+    }
+
+
+
+}
+
+
 void download_files::finish_download_process(QNetworkReply *reply)
 {
     downloaded_data=reply->readAll();
     if(firstOrNot==0)
-        tree->root->key.html=downloaded_data;
-    store_downloaded_file.insert(std::pair<QString,QByteArray>(url_str,downloaded_data));
-    current_data->key.html=downloaded_data;
-    tree->insert(current_data->parent->key,current_data->key);
+        save_in_a_folser(url_str,".",0);
+    else
+    {
+        if(current_data->key.which_item==1)
+            save_in_a_folser(url_str,current_data->parent->key.path,0);
+        else
+            save_in_a_folser(url_str,current_data->parent->key.path,1);
+        tree->insert(current_data->parent->key,current_data->key);
+    }
+    store_downloaded_file.insert(url_str,0);
 }
 
 void download_files::change_stats(QNetworkAccessManager::NetworkAccessibility)
 {
     //????
     emit disconnect();
+}
+
+QString download_files::make_name_of_dirOrFile(QString child)
+{
+    QString child_path="";
+    for(int j=0;j<child.length();j++)
+    {
+        // invalid character for name of file  or dir
+        if(child[j]=='/')
+            child_path+="()";
+        else if(child[j]=='|'||child[j]=='\\' || child[j]==':' || child[j]=='<' ||child[j]=='>'||child[j]=='?' ||child[j]=='*'||child[j]=='"')
+            child_path+=" ";
+        else child_path+=child[j];
+    }
+    return child_path;
 }
 

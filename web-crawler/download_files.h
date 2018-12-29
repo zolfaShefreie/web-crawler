@@ -5,7 +5,9 @@
 #include<QtNetwork>
 #include<regex>
 #include<QQueue>
-#include<map>
+#include<QHash>
+#include<QFile>
+#include<QDir>
 #include<tree_node.h>
 using namespace std;
 
@@ -24,7 +26,7 @@ public:
     vector<int> numberOfChildren;
     QByteArray downloaded_data;
     QQueue<tree_node*> queue_download;
-    map<QString,QByteArray> store_downloaded_file;
+    QHash<QString,int> store_downloaded_file;
     web_tree* tree;
     tree_node* parent_pointer;
     tree_node* current_data;
@@ -39,6 +41,8 @@ public:
     void get_links();
     void get_img();
     void get_script();
+    void save_in_a_folser(QString child,QString father,int dirOrFile);//0=dir  1=file
+    QString make_name_of_dirOrFile(QString);
 
 signals:
     void finsh_all_files();

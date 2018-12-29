@@ -16,7 +16,7 @@ public:
     //4::script
     int which_item;
     QString url_name;
-    QByteArray html;
+    QString path;
 
 
     bool operator ==(node const & n)
