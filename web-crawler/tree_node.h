@@ -23,13 +23,17 @@ class web_tree
 public:
     tree_node * root;
     int cnt;
-    tree_node* search(node f);
-    bool insert(node a,node b);
-    //void tree_traversal();
+    tree_node* search(tree_node & f);
+    bool insert(tree_node &f);
     int size();
     bool isEmpty();
     web_tree(node m);
-    QStringList children(node j);
+    //QStringList children(node j);
+    //tree_node* search(node f);
+    //void tree_traversal();
+    //bool insert(node a,node b);
+
+
 };
 
 #endif // TREE_NODE_H
