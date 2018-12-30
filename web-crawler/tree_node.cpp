@@ -65,12 +65,7 @@ bool web_tree::isEmpty()
     else return false;
 }
 
-web_tree::web_tree(node m)
-{
-    tree_node* a=new tree_node(m);
-    root=a;
-    cnt=1;
-}
+
 
 QStringList web_tree::children(tree_node j)
 {
@@ -98,6 +93,18 @@ void web_tree::clear()
     }
     delete root;
     b=0;
+}
+
+web_tree::web_tree()
+{
+
+}
+
+web_tree::web_tree(tree_node &a)
+{
+    tree_node*b=&a;
+    root=b;
+    cnt=1;
 }
 
 //QStringList web_tree::children(node j)
@@ -181,4 +188,11 @@ bool web_tree::insert(tree_node *f)
 //        }
 //    }
 //    return false;
+//}
+
+//web_tree::web_tree(node m)
+//{
+//    tree_node* a=new tree_node(m);
+//    root=a;
+//    cnt=1;
 //}

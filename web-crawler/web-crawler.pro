@@ -17,14 +17,17 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     node.cpp \
     tree_node.cpp \
-    download_files.cpp
+    download_files.cpp \
+    result_page.cpp
 
 HEADERS  += mainwindow.h \
     node.h \
     tree_node.h \
-    download_files.h
+    download_files.h \
+    result_page.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    result_page.ui
 
 RESOURCES += \
     gif/gif.qrc \

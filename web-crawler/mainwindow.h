@@ -6,6 +6,7 @@
 #include <QMovie>
 #include <QDesktopServices>
 #include <download_files.h>
+#include<result_page.h>
 
 namespace Ui {
 class MainWindow;
@@ -16,6 +17,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    Result_page * r;
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     QString url;

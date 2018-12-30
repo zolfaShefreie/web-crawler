@@ -6,6 +6,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    Result_page *r=new Result_page();
+    r->show();
     ui->pushButton->setToolTip("click to start show the result");
     ui->pushButton_2->setToolTip("show the web page on the internet");
     ui->pushButton_3->setEnabled(false);
