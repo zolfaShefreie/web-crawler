@@ -2,6 +2,7 @@
 #define DOWNLOAD_FILES_H
 
 #include <QObject>
+#include<QThread>
 #include<QtNetwork>
 #include<regex>
 #include<QQueue>
@@ -12,7 +13,7 @@
 using namespace std;
 
 
-class download_files : public QObject
+class download_files : public QThread
 {
     Q_OBJECT
 public:
@@ -35,7 +36,7 @@ public:
     QNetworkAccessManager * networkManger;
     //QNetworkReply rely;
     QNetworkRequest* request;
-    void start_process();
+    void run();
     void download_file();
     void insert_to_tree();
     void get_links();

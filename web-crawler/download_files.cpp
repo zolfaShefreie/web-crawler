@@ -1,13 +1,13 @@
 #include "download_files.h"
 
-download_files::download_files(QObject *parent) : QObject(parent)
+download_files::download_files(QObject *parent) : QThread(parent)
 {
     i=0;
     queue_download.clear();
     //tree.clear();
 }
 
-void download_files::start_process()
+void download_files::run()
 {
     while (true)
     {
@@ -139,7 +139,7 @@ void download_files::get_img()
         string str1=match[1].str();
         data->key.url_name=QString::fromStdString(match[1].str());
         //img or gif
-        //nemifahme
+        //check shavad
         regex r1(".+?\\.gif");
         if(std::regex_match(str1,r1))
             data->key.which_item=3;

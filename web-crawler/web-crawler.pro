@@ -25,3 +25,6 @@ HEADERS  += mainwindow.h \
     download_files.h
 
 FORMS    += mainwindow.ui
+
+RESOURCES += \
+    gif/gif.qrc
