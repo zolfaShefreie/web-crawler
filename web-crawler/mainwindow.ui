@@ -82,16 +82,6 @@
      <number>10</number>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_2">
-    <property name="geometry">
-     <rect>
-      <x>422</x>
-      <y>60</y>
-      <width>291</width>
-      <height>301</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QListWidget" name="listWidget">
     <property name="geometry">
      <rect>
@@ -139,6 +129,19 @@
     </property>
     <property name="text">
      <string>show result separate</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>446</x>
+      <y>62</y>
+      <width>251</width>
+      <height>291</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>
