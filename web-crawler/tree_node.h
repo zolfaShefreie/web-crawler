@@ -27,9 +27,11 @@ public:
     bool insert(tree_node * f);
     int size();
     bool isEmpty();
-    web_tree(node m);
     QStringList children(tree_node j);
     void clear();
+    web_tree();
+    web_tree(tree_node &a);
+    //web_tree(node m);
     //bool insert(tree_node &f);
     //QStringList children(node j);
     //tree_node* search(node f);
