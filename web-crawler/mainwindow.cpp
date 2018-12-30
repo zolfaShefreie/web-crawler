@@ -114,6 +114,26 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_pushButton_4_clicked()
 {
+    int item_index=ui->listWidget->currentRow();
+    //check shavad az 0 ya az 1 shuro' mishavad
+    tree_node *item=parent_item->child.at(item_index-1);
+    if(item->key.which_item==1)
+    {
+        parent_item=item;
+        fill_list_widget();
+    }
+    else if(item->key.which_item==2)
+    {
+        //show img
+    }
+    else if(item->key.which_item==3)
+    {
+        //gif
+    }
+    else
+    {
+        QDesktopServices::openUrl(QUrl(item->key.path));
+    }
 
 }
 
@@ -130,6 +150,8 @@ void MainWindow::finish_process()
     ui->pushButton_3->setEnabled(true);
     ui->pushButton_4->setEnabled(true);
     ui->pushButton_5->setEnabled(true);
+    QMovie* movie=new QMovie();
+    ui->label_2->setMovie(movie);
 
 }
 
