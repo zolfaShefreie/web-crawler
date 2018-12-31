@@ -1,9 +1,12 @@
 #include "download_files.h"
 
-download_files::download_files(QObject *parent) : QThread(parent)
+download_files::download_files(QObject *parent) : QObject(parent)
 {
     i=0;
     queue_download.clear();
+    tree=new web_tree();
+    parent_pointer=new tree_node();
+    current_data=new tree_node();
     //tree.clear();
 }
 
@@ -16,11 +19,14 @@ void download_files::run()
             // first step
             tree->root->key.which_item=1;
             tree->root->key.url_name=page_address;
+            tree->root->parent=NULL;
             parent_pointer=tree->root;
             url_str=tree->root->key.url_name;
+            current_data=tree->root;
             this->download_file();
             this->get_links();
             this->get_img();
+
             this->get_script();
 
             firstOrNot=1;
@@ -66,14 +72,14 @@ void download_files::run()
 void download_files::download_file()
 {
     networkManger=new QNetworkAccessManager(this);
-    connect(networkManger,SIGNAL(finished(QNetworkReply*)),this,SLOT(finish_download_process(QNetworkReply*)));
     QNetworkConfigurationManager manager;
-    networkManger->setConfiguration(manager.defaultConfiguration());
+    //networkManger->setConfiguration(manager.defaultConfiguration());
 
-    connect(networkManger, SIGNAL(networkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility)), this, SLOT(change_stats(QNetworkAccessManager::NetworkAccessibility)));
+    //connect(networkManger, SIGNAL(networkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility)), this, SLOT(change_stats(QNetworkAccessManager::NetworkAccessibility)));
     QUrl url=QUrl(url_str);
     request= new QNetworkRequest(url);
     networkManger->get(*request);
+    connect(networkManger,SIGNAL(finished(QNetworkReply*)),this,SLOT(finish_download_process(QNetworkReply*)));
 
 }
 
@@ -115,7 +121,7 @@ void download_files::get_links()
         regex r1("https://.*");
         regex r2("http://.*");
 
-        tree_node * data;
+        tree_node * data=new tree_node();
         data->parent=this->parent_pointer;
         while(std::regex_search(html_str,match,r))
         {
@@ -150,7 +156,7 @@ void download_files::get_img()
     string html_str=downloaded_data.toStdString();
     smatch match;
     regex r("img .*?src[\n ]*?=[\n ]*?\"(.*?)\"");
-    tree_node * data;
+    tree_node * data=new tree_node();
     data->parent=this->parent_pointer;
     while(std::regex_search(html_str,match,r))
     {
@@ -174,7 +180,7 @@ void download_files::get_script()
     string html_str=downloaded_data.toStdString();
     smatch match;
     regex r("script .*?src[\n ]*?=[\n ]*?\"(.*?)\"");
-    tree_node * data;
+    tree_node * data=new tree_node();
     data->parent=this->parent_pointer;
     while(std::regex_search(html_str,match,r))
     {
@@ -237,12 +243,15 @@ void download_files::finish_download_process(QNetworkReply *reply)
     downloaded_data=reply->readAll();
     if(downloaded_data==NULL&&QNetworkAccessManager::NotAccessible)
         emit disconnect();
-    if(firstOrNot==0)
+    if(current_data->parent==NULL)
         save_in_a_folser(url_str,".",0);
     else
     {
         if(current_data->key.which_item==1)
-            save_in_a_folser(url_str,current_data->parent->key.path,0);
+        {
+            QString h=current_data->parent->key.path;
+            save_in_a_folser(url_str,h,0);
+        }
         else
             save_in_a_folser(url_str,current_data->parent->key.path,1);
         tree->insert(current_data);

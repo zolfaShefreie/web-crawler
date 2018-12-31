@@ -11,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->pushButton_3->setEnabled(false);
     ui->pushButton_4->setEnabled(false);
     ui->pushButton_5->setEnabled(false);
+    parent_item=new tree_node();
+    pre_parent_item=new tree_node();
 
 }
 
@@ -23,13 +25,13 @@ void MainWindow::check_url()
 {
     for(int i=0;i<url.length();i++)
         if (url[i]==' ')
-            url.remove(i);
+            url.remove(i,1);
     if(url!=NULL)
     {
         regex r1("https://.*");
         regex r2("http://.*");
         if(std::regex_match(url.toStdString(),r1))
-            url.remove (5);
+            url.remove (4,1);
         else if(!std::regex_match(url.toStdString(),r2))
         {
             string str1="";
@@ -85,15 +87,16 @@ void MainWindow::on_pushButton_clicked()
         depth_page=ui->spinBox->value();
         downloader=new download_files();
         downloader->depth=depth_page;
+        downloader->page_address=url;
         downloader->url_str=url;
-        downloader->start();
+        downloader->run();
         connect(downloader,SIGNAL(finsh_all_files()),this,SLOT(finish_process()));
         connect(downloader,SIGNAL(disconnect()),this,SLOT());
         connect(downloader,SIGNAL(warning_conction()),this,SLOT());
-        QMovie *gif=new QMovie(":/new/prefix1/0_cWpsf9D3g346Va20.gif");
-        ui->label_2->setMovie(gif);
-        gif->setScaledSize(QSize(ui->label_2->width(),ui->label_2->height()));
-        gif->start();
+//        QMovie *gif=new QMovie(":/new/prefix1/0_cWpsf9D3g346Va20.gif");
+//        ui->label_2->setMovie(gif);
+//        gif->setScaledSize(QSize(ui->label_2->width(),ui->label_2->height()));
+//        gif->start();
 
 
     }
@@ -202,7 +205,7 @@ void MainWindow::finish_process()
 
 void MainWindow::dis_connect()
 {
-    downloader->wait();
+    //downloader->wait();
     QMessageBox *message=new QMessageBox();
     message->setText("please check the your connection internet and the try again");
     message->show();

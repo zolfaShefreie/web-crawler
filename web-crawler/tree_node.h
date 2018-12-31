@@ -21,15 +21,15 @@ public:
 class web_tree
 {
 public:
+    web_tree();
     tree_node * root;
-    int cnt;
+    int cnt=0;
     tree_node* search(tree_node & f);
     bool insert(tree_node * f);
     int size();
     bool isEmpty();
     QStringList children(tree_node j);
     void clear();
-    web_tree();
     web_tree(tree_node &a);
     //web_tree(node m);
     //bool insert(tree_node &f);

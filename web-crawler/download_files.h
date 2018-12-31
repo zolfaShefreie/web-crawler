@@ -13,7 +13,7 @@
 using namespace std;
 
 
-class download_files : public QThread
+class download_files : public QObject
 {
     Q_OBJECT
 public:

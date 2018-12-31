@@ -97,7 +97,7 @@ void web_tree::clear()
 
 web_tree::web_tree()
 {
-
+    this->root=new tree_node();
 }
 
 web_tree::web_tree(tree_node &a)
