@@ -6,8 +6,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    Result_page *r=new Result_page();
-    r->show();
     ui->pushButton->setToolTip("click to start show the result");
     ui->pushButton_2->setToolTip("show the web page on the internet");
     ui->pushButton_3->setEnabled(false);
@@ -45,12 +43,16 @@ void MainWindow::check_url()
 void MainWindow::fill_list_widget()
 {
     ui->listWidget->clear();
-    QIcon file_or_dir;
-    file_or_dir.addFile(":/new/prefix2/icons8-html-filetype-48.png");
+    QIcon file_back;
+    file_back.addFile(":/new/prefix2/icons8-arrow-pointing-left-64.png");
+    ui->listWidget->addItem(new QListWidgetItem (file_back,NULL));
+    QIcon file;
+    file.addFile(":/new/prefix2/icons8-html-filetype-48.png");
+    ui->listWidget->addItem(new QListWidgetItem (file,parent_item->key.url_name));
 
-    ui->listWidget->addItem(new QListWidgetItem (file_or_dir,parent_item->key.url_name));
     for(auto i=0;i<parent_item->child.size();i++)
     {
+        QIcon file_or_dir;
         tree_node * item=parent_item->child.at(i);
         if(item->key.which_item==1)
             file_or_dir.addFile(":/new/prefix2/icons8-opened-folder-48.png");
@@ -70,7 +72,8 @@ void MainWindow::on_pushButton_clicked()
     //start
     url=ui->lineEdit->text();
     check_url();
-    if(url==NULL)
+    QUrl *u=new QUrl(url);
+    if(url==NULL && !u->isValid())
     {
         QMessageBox *message=new QMessageBox();
         message->setText("invalid url");
@@ -85,6 +88,8 @@ void MainWindow::on_pushButton_clicked()
         downloader->url_str=url;
         downloader->start();
         connect(downloader,SIGNAL(finsh_all_files()),this,SLOT(finish_process()));
+        connect(downloader,SIGNAL(disconnect()),this,SLOT());
+        connect(downloader,SIGNAL(warning_conction()),this,SLOT());
         QMovie *gif=new QMovie(":/new/prefix1/0_cWpsf9D3g346Va20.gif");
         ui->label_2->setMovie(gif);
         gif->setScaledSize(QSize(ui->label_2->width(),ui->label_2->height()));
@@ -99,7 +104,8 @@ void MainWindow::on_pushButton_2_clicked()
 {
     QString url=ui->lineEdit->text();
     check_url();
-    if(url==NULL)
+    QUrl *u=new QUrl(url);
+    if(url==NULL && !u->isValid())
     {
         QMessageBox *message=new QMessageBox();
         message->setText("invalid url");
@@ -117,37 +123,74 @@ void MainWindow::on_pushButton_2_clicked()
 void MainWindow::on_pushButton_4_clicked()
 {
     int item_index=ui->listWidget->currentRow();
-    //check shavad az 0 ya az 1 shuro' mishavad
-    tree_node *item=parent_item->child.at(item_index-1);
-    if(item->key.which_item==1)
+    //az 0
+    if(item_index==0)
     {
-        parent_item=item;
-        fill_list_widget();
+        //back
+        if(parent_item->parent!=NULL)
+        {
+            tree_node * tmp;
+            tmp=parent_item;
+            parent_item=pre_parent_item;
+            pre_parent_item=tmp->parent;
+            fill_list_widget();
+        }
+
     }
-    else if(item->key.which_item==2)
+    else if(item_index==1)
     {
-        //show img
+        //file html
+        QDesktopServices::openUrl(QUrl(parent_item->key.path));
     }
-    else if(item->key.which_item==3)
+    else if(item_index>1)
     {
-        //gif
-    }
-    else
-    {
-        QDesktopServices::openUrl(QUrl(item->key.path));
+        tree_node *item=parent_item->child.at(item_index-2);
+        if(item->key.which_item==1)
+        {
+            pre_parent_item=parent_item;
+            parent_item=item;
+            fill_list_widget();
+        }
+        else if(item->key.which_item==2)
+        {
+            QByteArray data;
+            QFile *file=new QFile(item->key.path);
+            if(file->open(QIODevice::ReadOnly))
+            {
+                data=file->readAll();
+                file->close();
+            }
+            QPixmap p;
+            p.loadFromData(data);
+            ui->label_2->setPixmap(p.scaled(ui->label->width(),ui->label->height(),Qt::KeepAspectRatio));
+
+
+        }
+        else if(item->key.which_item==3)
+        {
+            //gif
+            QDesktopServices::openUrl(QUrl(item->key.url_name));
+        }
+        else
+        {
+            QDesktopServices::openUrl(QUrl(item->key.path));
+        }
     }
 
 }
 
 void MainWindow::on_pushButton_5_clicked()
 {
-    //page 2
+    Result_page * page2=new Result_page();
+    page2->w=downloader->tree;
+    page2->show();
 }
 
 void MainWindow::finish_process()
 {
     //QStringList list_str_children=downloader->tree->children(*downloader->tree->root);
     parent_item=downloader->tree->root;
+    pre_parent_item=downloader->tree->root;
     fill_list_widget();
     ui->pushButton_3->setEnabled(true);
     ui->pushButton_4->setEnabled(true);
@@ -157,7 +200,19 @@ void MainWindow::finish_process()
 
 }
 
-void MainWindow::on_lineEdit_textChanged(const QString &arg1)
+void MainWindow::dis_connect()
 {
+    downloader->wait();
+    QMessageBox *message=new QMessageBox();
+    message->setText("please check the your connection internet and the try again");
+    message->show();
 
 }
+
+void MainWindow::warning()
+{
+    QMessageBox *message=new QMessageBox();
+    message->setText("Unknown Accessibility connection");
+    message->show();
+}
+

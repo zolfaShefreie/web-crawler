@@ -48,10 +48,11 @@ public:
 signals:
     void finsh_all_files();
     void disconnect();
+    void warning_conction();
 
 public slots:
     void finish_download_process(QNetworkReply *);
-    void change_stats(QNetworkAccessManager::NetworkAccessibility);
+    void change_stats(QNetworkAccessManager::NetworkAccessibility state);
 
 };
 

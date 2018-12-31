@@ -79,11 +79,29 @@ void download_files::download_file()
 
 void download_files::insert_to_tree()
 {
+    tree_node * tmp=tree->search(*current_data);
     tree->insert(current_data);
     if(current_data->key.which_item==1)
+    {
+        QFile *file=new QFile(tmp->key.path+make_name_of_dirOrFile(tmp->key.url_name)+".txt");
+        if(file->open(QIODevice::ReadOnly))
+        {
+            downloaded_data=file->readAll();
+            file->close();
+        }
+
         save_in_a_folser(current_data->key.url_name,current_data->parent->key.path,0);
+    }
     else
+    {
+        QFile *file=new QFile(tmp->key.path);
+        if(file->open(QIODevice::ReadOnly))
+        {
+            downloaded_data=file->readAll();
+            file->close();
+        }
         save_in_a_folser(current_data->key.url_name,current_data->parent->key.path,1);
+    }
 
 }
 
@@ -182,7 +200,8 @@ void download_files::save_in_a_folser(QString child, QString father, int dirOrFi
         dir.mkdir(".");
         current_data->key.path=path;
         path+="/";
-        path+=make_name_of_dirOrFile(current_data->parent->key.url_name);
+        /*path+=make_name_of_dirOrFile(current_data->parent->key.url_name);*/
+        path+=child_path;
         path+=".txt";
         QFile *file=new QFile(path);
         if(file->open(QFile::Append))
@@ -216,6 +235,8 @@ void download_files::save_in_a_folser(QString child, QString father, int dirOrFi
 void download_files::finish_download_process(QNetworkReply *reply)
 {
     downloaded_data=reply->readAll();
+    if(downloaded_data==NULL&&QNetworkAccessManager::NotAccessible)
+        emit disconnect();
     if(firstOrNot==0)
         save_in_a_folser(url_str,".",0);
     else
@@ -229,10 +250,12 @@ void download_files::finish_download_process(QNetworkReply *reply)
     store_downloaded_file.insert(url_str,0);
 }
 
-void download_files::change_stats(QNetworkAccessManager::NetworkAccessibility)
+void download_files::change_stats(QNetworkAccessManager::NetworkAccessibility state)
 {
-    //????
-    emit disconnect();
+    if(state==QNetworkAccessManager::NotAccessible)
+        emit disconnect();
+    if(state==QNetworkAccessManager::UnknownAccessibility)
+        emit warning_conction();
 }
 
 QString download_files::make_name_of_dirOrFile(QString child)
