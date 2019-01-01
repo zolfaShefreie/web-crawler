@@ -55,7 +55,8 @@ void MainWindow::fill_list_widget()
     for(auto i=0;i<parent_item->child.size();i++)
     {
         QIcon file_or_dir;
-        tree_node * item=parent_item->child.at(i);
+        tree_node * item=new tree_node();
+        item=parent_item->child.at(i);
         if(item->key.which_item==1)
             file_or_dir.addFile(":/new/prefix2/icons8-opened-folder-48.png");
         else if(item->key.which_item==2)
@@ -132,7 +133,7 @@ void MainWindow::on_pushButton_4_clicked()
         //back
         if(parent_item->parent!=NULL)
         {
-            tree_node * tmp;
+            tree_node * tmp=new tree_node();
             tmp=parent_item;
             parent_item=pre_parent_item;
             pre_parent_item=tmp->parent;
@@ -147,7 +148,8 @@ void MainWindow::on_pushButton_4_clicked()
     }
     else if(item_index>1)
     {
-        tree_node *item=parent_item->child.at(item_index-2);
+        tree_node *item=new tree_node();
+        item=parent_item->child.at(item_index-2);
         if(item->key.which_item==1)
         {
             pre_parent_item=parent_item;
@@ -176,7 +178,8 @@ void MainWindow::on_pushButton_4_clicked()
         }
         else
         {
-            QDesktopServices::openUrl(QUrl(item->key.path));
+            //kar nemikoneh
+           // QDesktopServices::openUrl(QUrl(item->key.path));
         }
     }
 

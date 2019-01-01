@@ -49,10 +49,12 @@ signals:
     void finsh_all_files();
     void disconnect();
     void warning_conction();
+    void one_file_downloaded();
 
 public slots:
     void finish_download_process(QNetworkReply *);
     void change_stats(QNetworkAccessManager::NetworkAccessibility state);
+    void go_next_step();
 
 };
 

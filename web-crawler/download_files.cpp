@@ -12,10 +12,7 @@ download_files::download_files(QObject *parent) : QObject(parent)
 
 void download_files::run()
 {
-    while (true)
-    {
-        if(firstOrNot == 0)
-        {
+
             // first step
             tree->root->key.which_item=1;
             tree->root->key.url_name=page_address;
@@ -23,50 +20,11 @@ void download_files::run()
             parent_pointer=tree->root;
             url_str=tree->root->key.url_name;
             current_data=tree->root;
+            connect(this,SIGNAL(one_file_downloaded()),this,SLOT(go_next_step()));
+            QEventLoop * loop=new QEventLoop();
+            connect(this,SIGNAL(finsh_all_files()),loop,SLOT(quit()));
             this->download_file();
-            this->get_links();
-            this->get_img();
-
-            this->get_script();
-
-            firstOrNot=1;
-            //depth--;
-            numberOfChildren.push_back(tree->root->child.size());
-            numberOfChildren.push_back(0);
-        }
-        else if(firstOrNot!=0 && !queue_download.empty())
-        {
-            current_data=queue_download.first();
-            parent_pointer=current_data->parent;
-            url_str=current_data->key.url_name;
-            if(store_downloaded_file.find(url_str)!=store_downloaded_file.end())
-                this->download_file();
-            else insert_to_tree();
-            if(depth==numberOfChildren.size()-1)
-            {
-
-                if(current_data->key.which_item==1)
-                {
-                    this->get_links();
-                    this->get_img();
-                    this->get_script();
-                }
-
-                numberOfChildren[i+1]+=current_data->child.size();
-                if(numberOfChildren[i]==0)
-                {
-                    i++;
-                    numberOfChildren.push_back(0);
-                }
-                else numberOfChildren[i]--;
-            }
-        }
-        else if(firstOrNot!=0 && queue_download.empty())
-        {
-            emit finsh_all_files();
-            break;
-        }
-    }
+            loop->exec();
 }
 
 void download_files::download_file()
@@ -85,7 +43,8 @@ void download_files::download_file()
 
 void download_files::insert_to_tree()
 {
-    tree_node * tmp=tree->search(*current_data);
+    tree_node * tmp=new tree_node();
+    tmp=tree->search(current_data);
     tree->insert(current_data);
     if(current_data->key.which_item==1)
     {
@@ -108,7 +67,7 @@ void download_files::insert_to_tree()
         }
         save_in_a_folser(current_data->key.url_name,current_data->parent->key.path,1);
     }
-
+    emit one_file_downloaded();
 }
 
 void download_files::get_links()
@@ -121,10 +80,10 @@ void download_files::get_links()
         regex r1("https://.*");
         regex r2("http://.*");
 
-        tree_node * data=new tree_node();
-        data->parent=this->parent_pointer;
         while(std::regex_search(html_str,match,r))
         {
+            tree_node * data=new tree_node();
+            data->parent=this->parent_pointer;
             string str1=match[1].str();
             if(std::regex_match(str1,r1))
                 str1.erase (str1.begin()+4);
@@ -134,11 +93,7 @@ void download_files::get_links()
                 str1=page_address.toStdString()+match[1].str();
             }
 
-//            while(std::regex_search(str1,match1,r1))
-//            {
-//                listOfLinks.push_back(match1[1].str());
-//                str1=match1.suffix().str();
-//            }
+
             //mo'tabar budansh bayad check beshe
             data->key.url_name=QString::fromStdString(str1);
             data->key.which_item=1;
@@ -156,12 +111,22 @@ void download_files::get_img()
     string html_str=downloaded_data.toStdString();
     smatch match;
     regex r("img .*?src[\n ]*?=[\n ]*?\"(.*?)\"");
-    tree_node * data=new tree_node();
-    data->parent=this->parent_pointer;
+    regex r1("https://.*");
+    regex r2("http://.*");
+
     while(std::regex_search(html_str,match,r))
     {
+        tree_node * data=new tree_node();
+        data->parent=this->parent_pointer;
         string str1=match[1].str();
-        data->key.url_name=QString::fromStdString(match[1].str());
+        if(std::regex_match(str1,r1))
+            str1.erase (str1.begin()+4);
+        else if(!std::regex_match(str1,r2))
+        {
+            str1="";
+            str1=page_address.toStdString()+match[1].str();
+        }
+        data->key.url_name=QString::fromStdString(str1);
         //img or gif
         //check shavad
         regex r1(".+?\\.gif");
@@ -180,11 +145,21 @@ void download_files::get_script()
     string html_str=downloaded_data.toStdString();
     smatch match;
     regex r("script .*?src[\n ]*?=[\n ]*?\"(.*?)\"");
-    tree_node * data=new tree_node();
-    data->parent=this->parent_pointer;
+    regex r1("https://.*");
+    regex r2("http://.*");
     while(std::regex_search(html_str,match,r))
     {
-        data->key.url_name=QString::fromStdString(match[1].str());
+        tree_node * data=new tree_node();
+        data->parent=this->parent_pointer;
+        string str1=match[1].str();
+        if(std::regex_match(str1,r1))
+            str1.erase (str1.begin()+4);
+        else if(!std::regex_match(str1,r2))
+        {
+            str1="";
+            str1=page_address.toStdString()+match[1].str();
+        }
+        data->key.url_name=QString::fromStdString(str1);
         data->key.which_item=4;
         //tree->insert(data->parent->key,data->key);
         queue_download.enqueue(data);
@@ -210,7 +185,7 @@ void download_files::save_in_a_folser(QString child, QString father, int dirOrFi
         path+=child_path;
         path+=".txt";
         QFile *file=new QFile(path);
-        if(file->open(QFile::Append))
+        if(file->open(QFile::WriteOnly))
         {
             file->write(downloaded_data);
             file->flush();
@@ -224,7 +199,7 @@ void download_files::save_in_a_folser(QString child, QString father, int dirOrFi
         path+=child_path;
         path+=".txt";
         QFile *file=new QFile(path);
-        if(file->open(QFile::Append))
+        if(file->open(QFile::WriteOnly))
         {
             file->write(downloaded_data);
             file->flush();
@@ -240,11 +215,26 @@ void download_files::save_in_a_folser(QString child, QString father, int dirOrFi
 
 void download_files::finish_download_process(QNetworkReply *reply)
 {
+    downloaded_data.clear();
     downloaded_data=reply->readAll();
-    if(downloaded_data==NULL&&QNetworkAccessManager::NotAccessible)
-        emit disconnect();
+//    if(downloaded_data==NULL&&QNetworkAccessManager::NotAccessible)
+//        emit disconnect();
     if(current_data->parent==NULL)
+    {
         save_in_a_folser(url_str,".",0);
+        store_downloaded_file.insert(url_str,0);
+        this->download_file();
+        this->get_links();
+        this->get_img();
+
+        this->get_script();
+
+        firstOrNot=1;
+        //depth--;
+        numberOfChildren.push_back(tree->root->child.size());
+        numberOfChildren.push_back(0);
+        emit one_file_downloaded();
+    }
     else
     {
         if(current_data->key.which_item==1)
@@ -255,8 +245,30 @@ void download_files::finish_download_process(QNetworkReply *reply)
         else
             save_in_a_folser(url_str,current_data->parent->key.path,1);
         tree->insert(current_data);
+        store_downloaded_file.insert(url_str,0);
+        if(depth!=numberOfChildren.size()-1)
+        {
+
+            if(current_data->key.which_item==1)
+            {
+                this->get_links();
+                this->get_img();
+                this->get_script();
+            }
+
+            numberOfChildren[i+1]+=current_data->child.size();
+            if(numberOfChildren[i]==0)
+            {
+                i++;
+                numberOfChildren.push_back(0);
+            }
+            else numberOfChildren[i]--;
+        }
+        emit one_file_downloaded();
+
+
     }
-    store_downloaded_file.insert(url_str,0);
+
 }
 
 void download_files::change_stats(QNetworkAccessManager::NetworkAccessibility state)
@@ -265,6 +277,27 @@ void download_files::change_stats(QNetworkAccessManager::NetworkAccessibility st
         emit disconnect();
     if(state==QNetworkAccessManager::UnknownAccessibility)
         emit warning_conction();
+}
+
+void download_files::go_next_step()
+{
+    if(firstOrNot!=0 && !queue_download.empty()&& depth!=0)
+    {
+        current_data=queue_download.first();
+        queue_download.dequeue();
+        parent_pointer=current_data->parent;
+        url_str=current_data->key.url_name;
+        if(store_downloaded_file.find(url_str)==store_downloaded_file.end())
+            this->download_file();
+//        else
+//            insert_to_tree();
+
+    }
+    else if((firstOrNot!=0 && queue_download.empty())||depth==0)
+    {
+        emit finsh_all_files();
+    }
+    //connect(this,SIGNAL(one_file_downloaded()),this,SLOT(go_next_step()));
 }
 
 QString download_files::make_name_of_dirOrFile(QString child)

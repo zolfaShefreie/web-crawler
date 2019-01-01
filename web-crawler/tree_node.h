@@ -24,7 +24,7 @@ public:
     web_tree();
     tree_node * root;
     int cnt=0;
-    tree_node* search(tree_node & f);
+    tree_node* search(tree_node * f);
     bool insert(tree_node * f);
     int size();
     bool isEmpty();

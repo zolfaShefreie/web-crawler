@@ -69,18 +69,18 @@ bool web_tree::isEmpty()
 
 QStringList web_tree::children(tree_node j)
 {
-    QStringList l;
-    l.clear();
-    if(search(j)!=0)
-    {
-        tree_node* k=search(j);
-        for(int i=0;i<k->child.size();i++)
-        {
-            tree_node* a=k->child[i];
-            l.push_back(a->key.url_name);
-        }
-    }
-    return l;
+//    QStringList l;
+//    l.clear();
+//    if(search(j)!=0)
+//    {
+//        tree_node* k=search(j);
+//        for(int i=0;i<k->child.size();i++)
+//        {
+//            tree_node* a=k->child[i];
+//            l.push_back(a->key.url_name);
+//        }
+//    }
+//    return l;
 }
 
 void web_tree::clear()
@@ -125,9 +125,10 @@ web_tree::web_tree(tree_node &a)
 
 
 
-tree_node *web_tree::search(tree_node &f)
+tree_node *web_tree::search(tree_node *f)
 {
-    tree_node* m=&f;
+//    tree_node* m=new tree_node();
+//     m=&f;
     queue<tree_node*> q;
     q.push(root);
     while(!q.empty())
@@ -136,7 +137,7 @@ tree_node *web_tree::search(tree_node &f)
         while(n>0)
         {
             tree_node* p=q.front();
-            if(p->key==m->key && p->parent==m->parent)
+            if(p->key==f->key && p->parent==f->parent)
                 return p;
             q.pop();
             for(int i=0;i<p->child.size();i++)
@@ -144,7 +145,7 @@ tree_node *web_tree::search(tree_node &f)
             n--;
         }
     }
-    return 0;
+    return NULL;
 }
 
 bool web_tree::insert(tree_node *f)
