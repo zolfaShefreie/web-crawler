@@ -21,19 +21,17 @@ void download_files::run()
             url_str=tree->root->key.url_name;
             current_data=tree->root;
             connect(this,SIGNAL(one_file_downloaded()),this,SLOT(go_next_step()));
-            QEventLoop * loop=new QEventLoop();
-            connect(this,SIGNAL(finsh_all_files()),loop,SLOT(quit()));
             this->download_file();
-            loop->exec();
+
+
 }
 
 void download_files::download_file()
 {
     networkManger=new QNetworkAccessManager(this);
     QNetworkConfigurationManager manager;
-    //networkManger->setConfiguration(manager.defaultConfiguration());
-
-    //connect(networkManger, SIGNAL(networkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility)), this, SLOT(change_stats(QNetworkAccessManager::NetworkAccessibility)));
+    networkManger->setConfiguration(manager.defaultConfiguration());
+    connect(networkManger, SIGNAL(networkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility)), this, SLOT(change_stats(QNetworkAccessManager::NetworkAccessibility)));
     QUrl url=QUrl(url_str);
     request= new QNetworkRequest(url);
     networkManger->get(*request);
@@ -217,6 +215,7 @@ void download_files::finish_download_process(QNetworkReply *reply)
 {
     downloaded_data.clear();
     downloaded_data=reply->readAll();
+    count_download+=1;
 //    if(downloaded_data==NULL&&QNetworkAccessManager::NotAccessible)
 //        emit disconnect();
     if(current_data->parent==NULL)
@@ -231,7 +230,7 @@ void download_files::finish_download_process(QNetworkReply *reply)
 
         firstOrNot=1;
         //depth--;
-        numberOfChildren.push_back(tree->root->child.size());
+        numberOfChildren.push_back(queue_download.size());
         numberOfChildren.push_back(0);
         emit one_file_downloaded();
     }
@@ -248,6 +247,7 @@ void download_files::finish_download_process(QNetworkReply *reply)
         store_downloaded_file.insert(url_str,0);
         if(depth!=numberOfChildren.size()-1)
         {
+            int pre=queue_download.size();
 
             if(current_data->key.which_item==1)
             {
@@ -256,7 +256,7 @@ void download_files::finish_download_process(QNetworkReply *reply)
                 this->get_script();
             }
 
-            numberOfChildren[i+1]+=current_data->child.size();
+            numberOfChildren[i+1]+=(queue_download.size()-pre);
             if(numberOfChildren[i]==0)
             {
                 i++;
@@ -287,6 +287,8 @@ void download_files::go_next_step()
         queue_download.dequeue();
         parent_pointer=current_data->parent;
         url_str=current_data->key.url_name;
+        if(count_download==20)
+            QString j="j";
         if(store_downloaded_file.find(url_str)==store_downloaded_file.end())
             this->download_file();
 //        else

@@ -24,6 +24,7 @@ public:
     int depth;
     int firstOrNot=0;
     int i=0;
+    int count_download=0;
     vector<int> numberOfChildren;
     QByteArray downloaded_data;
     QQueue<tree_node*> queue_download;
