@@ -137,7 +137,7 @@ tree_node *web_tree::search(tree_node *f)
         while(n>0)
         {
             tree_node* p=q.front();
-            if(p->key==f->key && p->parent==f->parent)
+            if(p->key==f->key && p->parent!=f->parent)
                 return p;
             q.pop();
             for(int i=0;i<p->child.size();i++)

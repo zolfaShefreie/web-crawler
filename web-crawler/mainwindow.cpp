@@ -167,7 +167,7 @@ void MainWindow::on_pushButton_4_clicked()
             }
             QPixmap p;
             p.loadFromData(data);
-            ui->label_2->setPixmap(p.scaled(ui->label->width(),ui->label->height(),Qt::KeepAspectRatio));
+            ui->label_2->setPixmap(p.scaled(ui->label_2->width(),ui->label_2->height(),Qt::KeepAspectRatio));
 
 
         }

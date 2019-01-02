@@ -20,7 +20,7 @@ void download_files::run()
             parent_pointer=tree->root;
             url_str=tree->root->key.url_name;
             current_data=tree->root;
-            connect(this,SIGNAL(one_file_downloaded()),this,SLOT(go_next_step()));
+            connect(this,SIGNAL(one_file_downloaded()),this,SLOT(go_next_step()),Qt::UniqueConnection);
             this->download_file();
 
 
@@ -43,29 +43,33 @@ void download_files::insert_to_tree()
 {
     tree_node * tmp=new tree_node();
     tmp=tree->search(current_data);
-    tree->insert(current_data);
-    if(current_data->key.which_item==1)
+    if(tmp!=NULL)
     {
-        QFile *file=new QFile(tmp->key.path+make_name_of_dirOrFile(tmp->key.url_name)+".txt");
-        if(file->open(QIODevice::ReadOnly))
-        {
-            downloaded_data=file->readAll();
-            file->close();
-        }
+        current_data->key.path=tmp->key.path;
+        tree->insert(current_data);
 
-        save_in_a_folser(current_data->key.url_name,current_data->parent->key.path,0);
+//    if(current_data->key.which_item==1)
+//    {
+//        QFile *file=new QFile(tmp->key.path+make_name_of_dirOrFile(tmp->key.url_name)+".txt");
+//        if(file->open(QIODevice::ReadOnly))
+//        {
+//            downloaded_data=file->readAll();
+//            file->close();
+//        }
+
+//        save_in_a_folser(current_data->key.url_name,current_data->parent->key.path,0);
+//    }
+//    else
+//    {
+//        QFile *file=new QFile(tmp->key.path);
+//        if(file->open(QIODevice::ReadOnly))
+//        {
+//            downloaded_data=file->readAll();
+//            file->close();
+//        }
+//        save_in_a_folser(current_data->key.url_name,current_data->parent->key.path,1);
+//    }
     }
-    else
-    {
-        QFile *file=new QFile(tmp->key.path);
-        if(file->open(QIODevice::ReadOnly))
-        {
-            downloaded_data=file->readAll();
-            file->close();
-        }
-        save_in_a_folser(current_data->key.url_name,current_data->parent->key.path,1);
-    }
-    emit one_file_downloaded();
 }
 
 void download_files::get_links()
@@ -247,6 +251,7 @@ void download_files::finish_download_process(QNetworkReply *reply)
         store_downloaded_file.insert(url_str,0);
         if(depth!=numberOfChildren.size()-1)
         {
+            parent_pointer=current_data;
             int pre=queue_download.size();
 
             if(current_data->key.which_item==1)
@@ -285,14 +290,21 @@ void download_files::go_next_step()
     {
         current_data=queue_download.first();
         queue_download.dequeue();
-        parent_pointer=current_data->parent;
         url_str=current_data->key.url_name;
-        if(count_download==20)
-            QString j="j";
+
         if(store_downloaded_file.find(url_str)==store_downloaded_file.end())
             this->download_file();
-//        else
-//            insert_to_tree();
+        else
+        {
+            if(numberOfChildren[i]==0)
+            {
+                i++;
+                numberOfChildren.push_back(0);
+            }
+            else numberOfChildren[i]--;
+            insert_to_tree();
+            emit one_file_downloaded();
+        }
 
     }
     else if((firstOrNot!=0 && queue_download.empty())||depth==0)
