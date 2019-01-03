@@ -8,7 +8,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->pushButton->setToolTip("click to start show the result");
     ui->pushButton_2->setToolTip("show the web page on the internet");
-    ui->pushButton_3->setEnabled(false);
     ui->pushButton_4->setEnabled(false);
     ui->pushButton_5->setEnabled(false);
     parent_item=new tree_node();
@@ -189,6 +188,7 @@ void MainWindow::on_pushButton_5_clicked()
 {
     Result_page * page2=new Result_page();
     page2->w=downloader->tree;
+    page2->start();
     page2->show();
 }
 
@@ -198,7 +198,6 @@ void MainWindow::finish_process()
     parent_item=downloader->tree->root;
     pre_parent_item=downloader->tree->root;
     fill_list_widget();
-    ui->pushButton_3->setEnabled(true);
     ui->pushButton_4->setEnabled(true);
     ui->pushButton_5->setEnabled(true);
     QMovie* movie=new QMovie();

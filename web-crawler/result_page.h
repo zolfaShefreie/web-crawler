@@ -15,6 +15,7 @@ class Result_page : public QWidget
 public:
     web_tree* w;
     explicit Result_page(QWidget *parent = 0);
+    void start();
     ~Result_page();
 
 private:

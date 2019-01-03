@@ -95,25 +95,12 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>530</y>
-      <width>151</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>web page</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="pushButton_4">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>530</y>
-      <width>141</width>
+      <x>120</x>
+      <y>520</y>
+      <width>301</width>
       <height>21</height>
      </rect>
     </property>
@@ -125,7 +112,7 @@
     <property name="geometry">
      <rect>
       <x>680</x>
-      <y>530</y>
+      <y>520</y>
       <width>151</width>
       <height>21</height>
      </rect>
