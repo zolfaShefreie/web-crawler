@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1247</width>
-    <height>871</height>
+    <width>1068</width>
+    <height>575</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>140</x>
+     <x>270</x>
      <y>30</y>
      <width>541</width>
      <height>71</height>
@@ -38,8 +38,8 @@ font: 18pt &quot;MV Boli&quot;;</string>
     <rect>
      <x>140</x>
      <y>220</y>
-     <width>91</width>
-     <height>251</height>
+     <width>181</width>
+     <height>291</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -49,9 +49,9 @@ font: 18pt &quot;MV Boli&quot;;</string>
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>130</x>
+     <x>140</x>
      <y>140</y>
-     <width>161</width>
+     <width>181</width>
      <height>51</height>
     </rect>
    </property>
@@ -66,9 +66,9 @@ font: 16pt &quot;MV Boli&quot;;</string>
   <widget class="QLabel" name="label_3">
    <property name="geometry">
     <rect>
-     <x>320</x>
+     <x>350</x>
      <y>140</y>
-     <width>201</width>
+     <width>181</width>
      <height>51</height>
     </rect>
    </property>
@@ -100,9 +100,9 @@ font: 16pt &quot;MV Boli&quot;;</string>
   <widget class="QLabel" name="label_5">
    <property name="geometry">
     <rect>
-     <x>760</x>
+     <x>770</x>
      <y>140</y>
-     <width>211</width>
+     <width>181</width>
      <height>51</height>
     </rect>
    </property>
@@ -117,10 +117,10 @@ font: 16pt &quot;MV Boli&quot;;</string>
   <widget class="QListWidget" name="listWidget_2">
    <property name="geometry">
     <rect>
-     <x>370</x>
+     <x>350</x>
      <y>220</y>
-     <width>131</width>
-     <height>251</height>
+     <width>181</width>
+     <height>291</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -130,10 +130,10 @@ font: 16pt &quot;MV Boli&quot;;</string>
   <widget class="QListWidget" name="listWidget_3">
    <property name="geometry">
     <rect>
-     <x>830</x>
-     <y>230</y>
-     <width>121</width>
-     <height>251</height>
+     <x>770</x>
+     <y>220</y>
+     <width>181</width>
+     <height>291</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -143,10 +143,10 @@ font: 16pt &quot;MV Boli&quot;;</string>
   <widget class="QListWidget" name="listWidget_4">
    <property name="geometry">
     <rect>
-     <x>610</x>
+     <x>560</x>
      <y>220</y>
-     <width>101</width>
-     <height>261</height>
+     <width>181</width>
+     <height>291</height>
     </rect>
    </property>
    <property name="styleSheet">

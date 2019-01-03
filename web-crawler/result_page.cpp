@@ -32,10 +32,10 @@ void Result_page::start()
                     ui->listWidget_2->addItem(p->key.url_name);
 
                 else if(p->key.which_item==3)
-                    ui->listWidget_3->addItem(p->key.url_name);
+                    ui->listWidget_4->addItem(p->key.url_name);
 
                 else if(p->key.which_item==4)
-                    ui->listWidget_4->addItem(p->key.url_name);
+                    ui->listWidget_3->addItem(p->key.url_name);
 
                 q.pop();
 
