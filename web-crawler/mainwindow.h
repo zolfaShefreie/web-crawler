@@ -21,6 +21,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     QString url;
+    QThread * thread;
     tree_node * parent_item;
     tree_node * pre_parent_item;
     int depth_page;

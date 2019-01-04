@@ -10,6 +10,11 @@ download_files::download_files(QObject *parent) : QObject(parent)
     //tree.clear();
 }
 
+void download_files::set_thread(QThread* thread)
+{
+    connect(thread,SIGNAL(started()),this,SLOT(do_work()));
+}
+
 void download_files::run()
 {
 
@@ -326,5 +331,10 @@ QString download_files::make_name_of_dirOrFile(QString child)
         else child_path+=child[j];
     }
     return child_path;
+}
+
+void download_files::do_work()
+{
+    this->run();
 }
 

@@ -19,6 +19,7 @@ class download_files : public QObject
 public:
 
     explicit download_files(QObject *parent = 0);
+    void set_thread(QThread* thread);
     QString page_address;
     QString url_str;
     int depth;
@@ -53,6 +54,7 @@ signals:
     void one_file_downloaded();
 
 public slots:
+    void do_work();
     void finish_download_process(QNetworkReply *);
     void change_stats(QNetworkAccessManager::NetworkAccessibility state);
     void go_next_step();

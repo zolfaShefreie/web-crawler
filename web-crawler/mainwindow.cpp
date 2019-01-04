@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    thread=new QThread();
     ui->pushButton->setToolTip("click to start show the result");
     ui->pushButton_2->setToolTip("show the web page on the internet");
     ui->pushButton_4->setEnabled(false);
@@ -89,14 +90,17 @@ void MainWindow::on_pushButton_clicked()
         downloader->depth=depth_page;
         downloader->page_address=url;
         downloader->url_str=url;
-        downloader->run();
+        downloader->set_thread(thread);
+        downloader->moveToThread(thread);
+        thread->start();
+        //downloader->run();
         connect(downloader,SIGNAL(finsh_all_files()),this,SLOT(finish_process()));
         connect(downloader,SIGNAL(disconnect()),this,SLOT());
         connect(downloader,SIGNAL(warning_conction()),this,SLOT());
-//        QMovie *gif=new QMovie(":/new/prefix1/0_cWpsf9D3g346Va20.gif");
-//        ui->label_2->setMovie(gif);
-//        gif->setScaledSize(QSize(ui->label_2->width(),ui->label_2->height()));
-//        gif->start();
+        QMovie *gif=new QMovie(":/new/prefix1/0_cWpsf9D3g346Va20.gif");
+        ui->label_2->setMovie(gif);
+        gif->setScaledSize(QSize(ui->label_2->width(),ui->label_2->height()));
+        gif->start();
 
 
     }
@@ -207,7 +211,7 @@ void MainWindow::finish_process()
 
 void MainWindow::dis_connect()
 {
-    //downloader->wait();
+    thread->quit();
     QMessageBox *message=new QMessageBox();
     message->setText("please check the your connection internet and the try again");
     message->show();
