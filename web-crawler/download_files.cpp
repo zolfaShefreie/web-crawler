@@ -131,8 +131,7 @@ void download_files::get_img()
         data->key.url_name=QString::fromStdString(str1);
         //img or gif
         //check shavad
-        regex r1(".+?\\.gif");
-        if(std::regex_match(str1,r1))
+        if(QString::fromStdString(str1).contains(".gif"))
             data->key.which_item=3;
         else data->key.which_item=2;
         //tree->insert(data->parent->key,data->key);
